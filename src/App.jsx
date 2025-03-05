@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+
 import './App.css'
 import '@xyflow/react/dist/style.css'
 
@@ -56,16 +57,13 @@ function App() {
         const actionBlueprintId = 'bp_01jk766tckfwx84xjcxazggzyc' // ?
         const tenantId = '1'
         const url = `http://localhost:3000/api/v1/${tenantId}/actions/blueprints/${actionBlueprintId}/graph`
-        // const url = 'http://localhost:3000/api/v1/1/actions/blueprints/bp/graph';
 
         const response = await fetch(url)
         const body = await response.json()
 
         if (body) {
-            // setOutput(body)
             setNodes(makeFlowNodes(body.nodes))
             setEdges(makeFlowEdges(body.edges))
-            // console.log('mf', makeForms(body.forms));
             setForms({ ...makeForms(body.forms) })
         }
     }
@@ -86,6 +84,10 @@ function App() {
         setActiveForm({})
     }
 
+    let cache = null;
+
+    useEffect(() => {fetchEndpoint()}, [])
+
     return (
         <>
             <div style={{ width: '100vw', height: 'calc(100vh - 120px)' }}>
@@ -98,7 +100,7 @@ function App() {
                 />
             </div>
             <div className="control-panel">
-                <button onClick={fetchEndpoint}>fetch</button>
+                {/* <button onClick={fetchEndpoint}>fetch</button> */}
                 <button onClick={dismissForm}>dismiss form</button>
                 <div className="form">
                     {'id' in activeForm && renderForm(activeForm)}
