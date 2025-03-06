@@ -62,29 +62,27 @@ function App() {
         const body = await response.json()
 
         if (body) {
+            setForms({ ...makeForms(body.forms) })
             setNodes(makeFlowNodes(body.nodes))
             setEdges(makeFlowEdges(body.edges))
-            setForms({ ...makeForms(body.forms) })
-        }
+        } 
+        return true
     }
 
     const handleNodeClick = useCallback((_, node) => {
         const { formId } = node
-        console.log('form selected', formId)
         setActiveForm({...forms[formId]})
-    }, [])
+    }, [forms])
 
     const renderForm = (f) => {
         const schema = f['ui_schema']
         const {elements} = schema
-        return <ul>{elements.map((e) => <li>{e.label}</li>)}</ul>
+        return <ul>{elements.map((e, i) => <li key={`element-${i}`}>{e.label}</li>)}</ul>
     }
 
     const dismissForm = () => {
         setActiveForm({})
     }
-
-    let cache = null;
 
     useEffect(() => {fetchEndpoint()}, [])
 
